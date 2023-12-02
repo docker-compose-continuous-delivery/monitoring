@@ -23,6 +23,8 @@ services:
       - "traefik.http.routers.dozzle.service=dozzle"
       - "traefik.http.services.dozzle.loadbalancer.server.port=8080"
 
+      - "com.centurylinklabs.watchtower.enable=true"
+
   uptime-kuma:
     image: 'louislam/uptime-kuma:latest'
     container_name: uptime-kuma
@@ -44,6 +46,13 @@ services:
     restart: unless-stopped
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+      - /etc/timezone:/etc/timezone:ro
+    environment:
+      - WATCHTOWER_SCHEDULE=0 0 4 * * * # Every day at 4am
+      - WATCHTOWER_CLEANUP=true
+      - WATCHTOWER_LABEL_ENABLE=true
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
 
 
 networks:
